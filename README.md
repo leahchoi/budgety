@@ -1,4 +1,4 @@
-# budgety
+# Budgety
 > A responsive eCommerce food delivery service website.
 
 ## Technologies used:
