@@ -1,9 +1,9 @@
 # budgety
 > A responsive eCommerce food delivery service website.
 
-- Technologies:
--- Javascript
--- HTML
--- CSS
--- Bootstrap
+## Technologies used:
+- HTML5
+- CSS3
+- JavaScript
+- jQuery
 
