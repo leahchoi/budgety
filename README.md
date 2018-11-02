@@ -1,5 +1,5 @@
 # Budgety
-> A responsive eCommerce food delivery service website.
+> A budget application where you can track your incomes and expenses.
 
 ## Technologies used:
 - HTML5
