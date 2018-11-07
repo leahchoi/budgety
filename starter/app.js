@@ -56,9 +56,6 @@ var budgetController = (function () {
     return {
         addItem: function (type, des, val) {
             var newItem, ID;
-
-            //[1 2 3 4 5], next ID = 6
-            //[1 2 4 6 8], next ID = 9
             // ID = last ID + 1
 
             // Create new ID
@@ -317,8 +314,6 @@ var UIController = (function () {
             var now, months, month, year;
 
             now = new Date();
-            //var christmas = new Date(2016, 11, 25);
-
             months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             month = now.getMonth();
 
