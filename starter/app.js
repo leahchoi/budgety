@@ -1,4 +1,7 @@
 // BUDGET CONTROLLER
+
+// How to have hover and click events be triggered by separate taps on iPhone
+//     document.body.addEventListener('touchstart',function(){},false);
 var budgetController = (function () {
 
     var Expense = function (id, description, value) {
@@ -92,7 +95,7 @@ var budgetController = (function () {
         deleteItem: function (type, id) {
             debugger;
             var ids, index;
-            
+
             // id = 6
             //data.allItems[type][id];
             // ids = [1 2 4  8]
