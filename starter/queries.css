@@ -37,12 +37,20 @@
 
 /* Small phones to small tablets: from 481px to 767px */
 @media only screen and (max-width: 767px) {
+    body{
+        /* min-width: 130vw; */
+    }
+
     .add__description{
         width: auto;
     }
 
     .container {
         width: 130%;
+    }
+
+    .top {
+        /* min-height: 57vh; */
     }
 }
 

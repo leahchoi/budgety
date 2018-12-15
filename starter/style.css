@@ -42,6 +42,7 @@ body {
 .budget {
     position: absolute;
     width: 450px;
+    /* min-height: 70vh; */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -276,3 +277,12 @@ h2 {
 .unpaid .item__percentage { box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1); }
 .unpaid:hover .item__description { font-weight: 900; }
 
+.icome__title,
+.expenses__title {
+    padding-top: 2%;
+}
+
+.no-item-inc,
+.no-item-exp {
+    color: #696969;
+}

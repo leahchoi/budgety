@@ -10,6 +10,7 @@ var budgetController = (function () {
 
 
     Expense.prototype.calcPercentage = function (totalIncome) {
+        debugger;
         if (totalIncome > 0) {
             this.percentage = Math.round((this.value / totalIncome) * 100);
         } else {
@@ -31,6 +32,7 @@ var budgetController = (function () {
 
 
     var calculateTotal = function (type) {
+        debugger;
         var sum = 0;
         data.allItems[type].forEach(function (cur) {
             sum += cur.value;
@@ -55,9 +57,16 @@ var budgetController = (function () {
 
     return {
         addItem: function (type, des, val) {
+            debugger;
             var newItem, ID;
             // ID = last ID + 1
-
+            // if (allItems.exp === 0) {
+            //     return 'There is no income item';
+            // } else if (allItems.inc === 0) {
+            //     return 'There is no expense item';
+            // }
+            var element = document.querySelector(`.no-item-${type}`);
+            element.style.display = 'none';
             // Create new ID
             if (data.allItems[type].length > 0) {
                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
@@ -81,8 +90,9 @@ var budgetController = (function () {
 
 
         deleteItem: function (type, id) {
+            debugger;
             var ids, index;
-
+            
             // id = 6
             //data.allItems[type][id];
             // ids = [1 2 4  8]
@@ -98,10 +108,15 @@ var budgetController = (function () {
                 data.allItems[type].splice(index, 1);
             }
 
+            if (data.allItems[type].length === 0){
+                var element = document.querySelector(`.no-item-${type}`);
+                element.style.display = 'inline-block';
+            }
         },
 
 
         calculateBudget: function () {
+            debugger;
 
             // calculate total income and expenses
             calculateTotal('exp');
@@ -121,17 +136,6 @@ var budgetController = (function () {
         },
 
         calculatePercentages: function () {
-
-            /*
-            a=20
-            b=10
-            c=40
-            income = 100
-            a=20/100=20%
-            b=10/100=10%
-            c=40/100=40%
-            */
-
             data.allItems.exp.forEach(function (cur) {
                 cur.calcPercentage(data.totals.inc);
             });
@@ -147,6 +151,7 @@ var budgetController = (function () {
 
 
         getBudget: function () {
+            debugger;
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
@@ -186,6 +191,7 @@ var UIController = (function () {
 
 
     var formatNumber = function (num, type) {
+        debugger;
         var numSplit, int, dec, type;
         /*
             + or - before number
@@ -214,6 +220,7 @@ var UIController = (function () {
 
 
     var nodeListForEach = function (list, callback) {
+        debugger;
         for (var i = 0; i < list.length; i++) {
             callback(list[i], i);
         }
@@ -231,6 +238,7 @@ var UIController = (function () {
 
 
         addListItem: function (obj, type) {
+            debugger;
             var html, newHtml, element;
             // Create HTML string with placeholder text
 
@@ -254,11 +262,15 @@ var UIController = (function () {
         },
 
 
-        deleteListItem: function (selectorID) {
-
+        deleteListItem: function (selectorID, type) {
+            debugger;
             var el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
-
+            // if (allItems[type].length === 0){
+            //     var element = document.querySelector(`.no-item-${type}`);
+            //     element.style.display = 'inline-block';
+            // }
+            
         },
 
 
@@ -278,6 +290,7 @@ var UIController = (function () {
 
 
         displayBudget: function (obj) {
+            debugger;
             var type;
             obj.budget > 0 ? type = 'inc' : type = 'exp';
 
@@ -352,6 +365,7 @@ var UIController = (function () {
 var controller = (function (budgetCtrl, UICtrl) {
 
     var setupEventListeners = function () {
+        debugger;
         var DOM = UICtrl.getDOMstrings();
 
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
@@ -395,6 +409,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
 
     var ctrlAddItem = function () {
+        debugger;
         var input, newItem;
 
         // 1. Get the field input data
@@ -420,6 +435,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
 
     var ctrlDeleteItem = function (event) {
+        debugger;
         var itemID, splitID, type, ID;
 
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
@@ -435,7 +451,7 @@ var controller = (function (budgetCtrl, UICtrl) {
             budgetCtrl.deleteItem(type, ID);
 
             // 2. Delete the item from the UI
-            UICtrl.deleteListItem(itemID);
+            UICtrl.deleteListItem(itemID, type);
 
             // 3. Update and show the new budget
             updateBudget();
@@ -448,6 +464,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     return {
         init: function () {
+            debugger;
             console.log('Application has started.');
             UICtrl.displayMonth();
             UICtrl.displayBudget({
