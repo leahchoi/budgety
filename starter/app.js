@@ -2,6 +2,14 @@
 
 // How to have hover and click events be triggered by separate taps on iPhone
 //     document.body.addEventListener('touchstart',function(){},false);
+
+$(document).ready(function () {
+    debugger;
+    $(".ion-ios-close-outline").click(function () {
+        $("#myModal").modal();
+    });
+});
+
 var budgetController = (function () {
 
     var Expense = function (id, description, value) {
@@ -439,10 +447,16 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     var ctrlDeleteItem = function (event) {
         debugger;
+        $("#myModal").setAttribute('data-toggle', "modal");
+        $(".confirm-no-btn").click(function () {
+            return;
+        });
+        $(".confirm-yes-btn").click(function () {
+
+
         var itemID, splitID, type, ID;
 
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
-
         if (itemID) {
 
             //inc-1
@@ -462,6 +476,7 @@ var controller = (function (budgetCtrl, UICtrl) {
             // 4. Calculate and update percentages
             updatePercentages();
         }
+        });
     };
 
 
