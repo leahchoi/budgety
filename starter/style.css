@@ -40,6 +40,7 @@ body {
 **********************************************/
 
 .top {
+    min-height: 300px;
     height: 40vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png);
     background-size: cover;
@@ -422,6 +423,7 @@ button.close {
         overflow: hidden;
         -webkit-overflow-scrolling: touch;
         outline: 0;
+        background-color: rgba(0, 0, 0, 0.4)
 }
 
 .fade {
@@ -439,4 +441,10 @@ button.close {
         -ms-transform: translate(0, -25%);
         -o-transform: translate(0, -25%);
         transform: translate(0, -25%);
+}
+
+.modal-dialog {
+    margin: 240px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+      0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

@@ -4,7 +4,6 @@
 //     document.body.addEventListener('touchstart',function(){},false);
 
 $(document).ready(function () {
-    debugger;
     $(".ion-ios-close-outline").click(function () {
         $("#myModal").modal();
     });
@@ -21,7 +20,6 @@ var budgetController = (function () {
 
 
     Expense.prototype.calcPercentage = function (totalIncome) {
-        debugger;
         if (totalIncome > 0) {
             this.percentage = Math.round((this.value / totalIncome) * 100);
         } else {
@@ -43,7 +41,6 @@ var budgetController = (function () {
 
 
     var calculateTotal = function (type) {
-        debugger;
         var sum = 0;
         data.allItems[type].forEach(function (cur) {
             sum += cur.value;
@@ -68,7 +65,6 @@ var budgetController = (function () {
 
     return {
         addItem: function (type, des, val) {
-            debugger;
             var newItem, ID;
             // ID = last ID + 1
             // if (allItems.exp === 0) {
@@ -101,7 +97,7 @@ var budgetController = (function () {
 
 
         deleteItem: function (type, id) {
-            debugger;
+            // debugger;
             var ids, index;
 
             // id = 6
@@ -127,8 +123,6 @@ var budgetController = (function () {
 
 
         calculateBudget: function () {
-            debugger;
-
             // calculate total income and expenses
             calculateTotal('exp');
             calculateTotal('inc');
@@ -162,7 +156,6 @@ var budgetController = (function () {
 
 
         getBudget: function () {
-            debugger;
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
@@ -202,7 +195,6 @@ var UIController = (function () {
 
 
     var formatNumber = function (num, type) {
-        debugger;
         var numSplit, int, dec, type;
         /*
             + or - before number
@@ -231,11 +223,20 @@ var UIController = (function () {
 
 
     var nodeListForEach = function (list, callback) {
-        debugger;
         for (var i = 0; i < list.length; i++) {
             callback(list[i], i);
         }
     };
+
+    var deleteConfirmationModal = function () {
+        document.getElementById("myModal").style.display = "block";
+        $(".confirm-no-btn").click(function () {
+            return;
+        });
+        $(".confirm-yes-btn").click(function () {
+            ctrlDeleteItem();
+        })
+    }
 
 
     return {
@@ -249,7 +250,6 @@ var UIController = (function () {
 
 
         addListItem: function (obj, type) {
-            debugger;
             var html, newHtml, element;
             // Create HTML string with placeholder text
 
@@ -270,11 +270,18 @@ var UIController = (function () {
 
             // Insert the HTML into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+
+            // Search for item__delete--btn element and add click event for modal
+            document.querySelector(element).getElementsByClassName('item__delete--btn')[0].addEventListener('click', function (event) {
+                document.getElementById("myModal").style.display = "block";
+                deleteConfirmationModal();
+            })
         },
+        
 
 
         deleteListItem: function (selectorID, type) {
-            debugger;
+            // debugger;
             var el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
             // if (allItems[type].length === 0){
@@ -301,7 +308,6 @@ var UIController = (function () {
 
 
         displayBudget: function (obj) {
-            debugger;
             var type;
             obj.budget > 0 ? type = 'inc' : type = 'exp';
 
@@ -376,7 +382,6 @@ var UIController = (function () {
 var controller = (function (budgetCtrl, UICtrl) {
 
     var setupEventListeners = function () {
-        debugger;
         var DOM = UICtrl.getDOMstrings();
 
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
@@ -420,7 +425,6 @@ var controller = (function (budgetCtrl, UICtrl) {
 
 
     var ctrlAddItem = function () {
-        debugger;
         var input, newItem;
 
         // 1. Get the field input data
@@ -445,44 +449,48 @@ var controller = (function (budgetCtrl, UICtrl) {
     };
 
 
+
+
+
+    // $(".ion-ios-close-outline").click(function (event) {
+    //     document.getElementById("myModal").style.display = "block";
+    // });
+
     var ctrlDeleteItem = function (event) {
-        debugger;
-        $("#myModal").setAttribute('data-toggle', "modal");
-        $(".confirm-no-btn").click(function () {
-            return;
-        });
-        $(".confirm-yes-btn").click(function () {
+        // debugger;
+        // deleteConfirmation();
+        // $(".confirm-no-btn").click(function () {
+        //     return;
+        // });
+        // $(".confirm-yes-btn").click(function () {
+            var itemID, splitID, type, ID;
 
+            itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+            if (itemID) {
 
-        var itemID, splitID, type, ID;
+                //inc-1
+                splitID = itemID.split('-');
+                type = splitID[0];
+                ID = parseInt(splitID[1]);
 
-        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
-        if (itemID) {
+                // 1. delete the item from the data structure
+                budgetCtrl.deleteItem(type, ID);
 
-            //inc-1
-            splitID = itemID.split('-');
-            type = splitID[0];
-            ID = parseInt(splitID[1]);
+                // 2. Delete the item from the UI
+                UICtrl.deleteListItem(itemID, type);
 
-            // 1. delete the item from the data structure
-            budgetCtrl.deleteItem(type, ID);
+                // 3. Update and show the new budget
+                updateBudget();
 
-            // 2. Delete the item from the UI
-            UICtrl.deleteListItem(itemID, type);
-
-            // 3. Update and show the new budget
-            updateBudget();
-
-            // 4. Calculate and update percentages
-            updatePercentages();
-        }
-        });
+                // 4. Calculate and update percentages
+                updatePercentages();
+            }
+        // });
     };
 
 
     return {
         init: function () {
-            debugger;
             console.log('Application has started.');
             UICtrl.displayMonth();
             UICtrl.displayBudget({
