@@ -10,7 +10,7 @@ $(document).ready(function () {
 });
 
 var budgetController = (function () {
-
+    debugger;
     var Expense = function (id, description, value) {
         this.id = id;
         this.description = description;
@@ -65,6 +65,7 @@ var budgetController = (function () {
 
     return {
         addItem: function (type, des, val) {
+            debugger;
             var newItem, ID;
             // ID = last ID + 1
             // if (allItems.exp === 0) {
@@ -97,6 +98,7 @@ var budgetController = (function () {
 
 
         deleteItem: function (type, id) {
+            debugger;
             // debugger;
             var ids, index;
 
@@ -156,6 +158,7 @@ var budgetController = (function () {
 
 
         getBudget: function () {
+            debugger;
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
@@ -176,7 +179,7 @@ var budgetController = (function () {
 
 // UI CONTROLLER
 var UIController = (function () {
-
+    debugger;
     var DOMstrings = {
         inputType: '.add__type',
         inputDescription: '.add__description',
@@ -195,6 +198,7 @@ var UIController = (function () {
 
 
     var formatNumber = function (num, type) {
+        debugger;
         var numSplit, int, dec, type;
         /*
             + or - before number
@@ -223,24 +227,18 @@ var UIController = (function () {
 
 
     var nodeListForEach = function (list, callback) {
+        debugger;
         for (var i = 0; i < list.length; i++) {
             callback(list[i], i);
         }
     };
 
-    var deleteConfirmationModal = function () {
-        document.getElementById("myModal").style.display = "block";
-        $(".confirm-no-btn").click(function () {
-            return;
-        });
-        $(".confirm-yes-btn").click(function () {
-            ctrlDeleteItem();
-        })
-    }
+
 
 
     return {
         getInput: function () {
+            debugger;
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // Will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
@@ -250,6 +248,7 @@ var UIController = (function () {
 
 
         addListItem: function (obj, type) {
+            debugger;
             var html, newHtml, element;
             // Create HTML string with placeholder text
 
@@ -274,13 +273,14 @@ var UIController = (function () {
             // Search for item__delete--btn element and add click event for modal
             document.querySelector(element).getElementsByClassName('item__delete--btn')[0].addEventListener('click', function (event) {
                 document.getElementById("myModal").style.display = "block";
-                deleteConfirmationModal();
+                // deleteConfirmationModal();
             })
         },
         
 
 
         deleteListItem: function (selectorID, type) {
+            debugger;
             // debugger;
             var el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
@@ -293,6 +293,7 @@ var UIController = (function () {
 
 
         clearFields: function () {
+            debugger;
             var fields, fieldsArr;
 
             fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
@@ -308,6 +309,7 @@ var UIController = (function () {
 
 
         displayBudget: function (obj) {
+            debugger;
             var type;
             obj.budget > 0 ? type = 'inc' : type = 'exp';
 
@@ -325,7 +327,7 @@ var UIController = (function () {
 
 
         displayPercentages: function (percentages) {
-
+            debugger;
             var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
             nodeListForEach(fields, function (current, index) {
@@ -382,6 +384,7 @@ var UIController = (function () {
 var controller = (function (budgetCtrl, UICtrl) {
 
     var setupEventListeners = function () {
+        debugger;
         var DOM = UICtrl.getDOMstrings();
 
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
@@ -392,14 +395,14 @@ var controller = (function (budgetCtrl, UICtrl) {
             }
         });
 
-        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+        document.querySelector(DOM.container).addEventListener('click', deleteConfirmationModal);
 
         document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
 
 
     var updateBudget = function () {
-
+        debugger;
         // 1. Calculate the budget
         budgetCtrl.calculateBudget();
 
@@ -425,6 +428,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
 
     var ctrlAddItem = function () {
+        debugger;
         var input, newItem;
 
         // 1. Get the field input data
@@ -457,6 +461,7 @@ var controller = (function (budgetCtrl, UICtrl) {
     // });
 
     var ctrlDeleteItem = function (event) {
+        debugger;
         // debugger;
         // deleteConfirmation();
         // $(".confirm-no-btn").click(function () {
@@ -487,10 +492,22 @@ var controller = (function (budgetCtrl, UICtrl) {
             }
         // });
     };
-
+    var deleteConfirmationModal = function (event) {
+        debugger;
+        // document.getElementById("myM odal").style.display = "block";
+        $(".confirm-no-btn").click(function () {
+            console.log('clicked on no button')
+            document.getElementById("myModal").style.display = "none";
+        });
+        $(".confirm-yes-btn").click(function () {
+            document.getElementById("myModal").style.display = "none";
+            ctrlDeleteItem(event);
+        })
+    }
 
     return {
         init: function () {
+            debugger;
             console.log('Application has started.');
             UICtrl.displayMonth();
             UICtrl.displayBudget({
