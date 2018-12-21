@@ -272,6 +272,7 @@ var UIController = (function () {
 
             // Search for item__delete--btn element and add click event for modal
             document.querySelector(element).getElementsByClassName('item__delete--btn')[0].addEventListener('click', function (event) {
+                
                 document.getElementById("myModal").style.display = "block";
                 // deleteConfirmationModal();
             })
@@ -494,7 +495,7 @@ var controller = (function (budgetCtrl, UICtrl) {
     };
     var deleteConfirmationModal = function (event) {
         debugger;
-        // document.getElementById("myM odal").style.display = "block";
+        document.getElementById("myModal").style.display = "block";
         $(".confirm-no-btn").click(function () {
             console.log('clicked on no button')
             document.getElementById("myModal").style.display = "none";
@@ -502,6 +503,9 @@ var controller = (function (budgetCtrl, UICtrl) {
         $(".confirm-yes-btn").click(function () {
             document.getElementById("myModal").style.display = "none";
             ctrlDeleteItem(event);
+        })
+        $(".close").click(function () {
+            document.getElementById("myModal").style.display = "none";
         })
     }
 
