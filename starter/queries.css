@@ -41,6 +41,11 @@
         /* min-width: 130vw; */
     }
 
+    .modal-dialog {
+        margin: 5%;
+        margin-top: 35%;
+    }
+
     .add__description{
         width: auto;
     }

@@ -66,7 +66,7 @@ var budgetController = (function () {
     return {
         addItem: function (type, des, val) {
             debugger;
-            var newItem, ID;
+            var newItem, ID, key;
             // ID = last ID + 1
             // if (allItems.exp === 0) {
             //     return 'There is no income item';
@@ -75,18 +75,23 @@ var budgetController = (function () {
             // }
             var element = document.querySelector(`.no-item-${type}`);
             element.style.display = 'none';
+
+            //Create unique key for every item
+            key = Math.floor((Math.random() * 10) + 1);
             // Create new ID
+            debugger;
             if (data.allItems[type].length > 0) {
                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+                
             } else {
                 ID = 0;
             }
 
             // Create new item based on 'inc' or 'exp' type
             if (type === 'exp') {
-                newItem = new Expense(ID, des, val);
+                newItem = new Expense(ID, des, val, key);
             } else if (type === 'inc') {
-                newItem = new Income(ID, des, val);
+                newItem = new Income(ID, des, val, key);
             }
 
             // Push it into our data structure
@@ -97,7 +102,7 @@ var budgetController = (function () {
         },
 
 
-        deleteItem: function (type, id) {
+        deleteItem: function (type, id, key) {
             debugger;
             // debugger;
             var ids, index;
@@ -110,9 +115,9 @@ var budgetController = (function () {
             ids = data.allItems[type].map(function (current) {
                 return current.id;
             });
-
+            console.log('inside of delete item', ids)
             index = ids.indexOf(id);
-
+            // index = ids.id;
             if (index !== -1) {
                 data.allItems[type].splice(index, 1);
             }
@@ -242,7 +247,8 @@ var UIController = (function () {
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // Will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
-                value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
+                value: parseFloat(document.querySelector(DOMstrings.inputValue).value),
+                key: Math.floor((Math.random() * 20) + 1)
             };
         },
 
@@ -271,11 +277,10 @@ var UIController = (function () {
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
 
             // Search for item__delete--btn element and add click event for modal
-            document.querySelector(element).getElementsByClassName('item__delete--btn')[0].addEventListener('click', function (event) {
+            // document.querySelector(element).getElementsByClassName('item__delete--btn')[0].addEventListener('click', function (event) {
                 
-                document.getElementById("myModal").style.display = "block";
-                // deleteConfirmationModal();
-            })
+            //     document.getElementById("myModal").style.display = "block";
+            // })
         },
         
 
@@ -383,6 +388,9 @@ var UIController = (function () {
 
 // GLOBAL APP CONTROLLER
 var controller = (function (budgetCtrl, UICtrl) {
+debugger;
+    console.log('controller', UICtrl.getDOMstrings().container)
+    document.querySelector(UICtrl.getDOMstrings().container).addEventListener('click', deleteConfirmationModal);
 
     var setupEventListeners = function () {
         debugger;
@@ -396,7 +404,7 @@ var controller = (function (budgetCtrl, UICtrl) {
             }
         });
 
-        document.querySelector(DOM.container).addEventListener('click', deleteConfirmationModal);
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
 
         document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
@@ -437,10 +445,10 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
             // 2. Add the item to the budget controller
-            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value, input.key);
+            console.log('inside of ctrlAddItem', newItem)
             // 3. Add the item to the UI
-            UICtrl.addListItem(newItem, input.type);
+            UICtrl.addListItem(newItem, input.type, input.key);
 
             // 4. Clear the fields
             UICtrl.clearFields();
@@ -463,37 +471,81 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     var ctrlDeleteItem = function (event) {
         debugger;
-        // debugger;
-        // deleteConfirmation();
-        // $(".confirm-no-btn").click(function () {
-        //     return;
-        // });
-        // $(".confirm-yes-btn").click(function () {
-            var itemID, splitID, type, ID;
+        console.log('delete confirmation modal', event.target)
+        debugger;
+        
+        if (document.getElementById("myModal").style.display = "none"){
+            event.preventDefault()
+            console.log('inside of open modal', event.target.parentNode.parentNode.parentNode.parentNode.id)
+            var itemEvent = event;
+        }
+        document.getElementById("myModal").style.display = "block";
+        $(".confirm-no-btn").off().click(function () {
+            console.log('clicked on no button')
+            document.getElementById("myModal").style.display = "none";
+        });
+        $(".confirm-yes-btn").off().click(function () {
+            document.getElementById("myModal").style.display = "none";
+            console.log('yes clicked for delete', event.target.parentNode.parentNode.parentNode.parentNode.id);
+            // var itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+            deleteItem(itemEvent);
+        })
+        $(".close").click(function () {
+            document.getElementById("myModal").style.display = "none";
+        })
+        //     var itemID, splitID, type, ID;
+            
+        //     itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        // console.log('inside ctrldeleteitem', itemID)
+        //     if (itemID) {
 
-            itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
-            if (itemID) {
+        //         //inc-1
+        //         splitID = itemID.split('-');
+        //         type = splitID[0];
+        //         ID = parseInt(splitID[1]);
 
-                //inc-1
-                splitID = itemID.split('-');
-                type = splitID[0];
-                ID = parseInt(splitID[1]);
+        //         // 1. delete the item from the data structure
+        //         budgetCtrl.deleteItem(type, ID);
 
-                // 1. delete the item from the data structure
-                budgetCtrl.deleteItem(type, ID);
+        //         // 2. Delete the item from the UI
+        //         UICtrl.deleteListItem(itemID, type);
 
-                // 2. Delete the item from the UI
-                UICtrl.deleteListItem(itemID, type);
+        //         // 3. Update and show the new budget
+        //         updateBudget();
 
-                // 3. Update and show the new budget
-                updateBudget();
-
-                // 4. Calculate and update percentages
-                updatePercentages();
-            }
+        //         // 4. Calculate and update percentages
+        //         updatePercentages();
+        //     }
         // });
     };
+    var deleteItem = function(event){
+        var itemID, splitID, type, ID;
+
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        console.log('inside ctrldeleteitem', itemID)
+        if (itemID) {
+
+            //inc-1
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = parseInt(splitID[1]);
+
+            // 1. delete the item from the data structure
+            budgetCtrl.deleteItem(type, ID);
+
+            // 2. Delete the item from the UI
+            UICtrl.deleteListItem(itemID, type);
+
+            // 3. Update and show the new budget
+            updateBudget();
+
+            // 4. Calculate and update percentages
+            updatePercentages();
+        }
+    };
+
     var deleteConfirmationModal = function (event) {
+        console.log('delete confirmation modal', event.target)
         debugger;
         document.getElementById("myModal").style.display = "block";
         $(".confirm-no-btn").click(function () {
@@ -502,7 +554,9 @@ var controller = (function (budgetCtrl, UICtrl) {
         });
         $(".confirm-yes-btn").click(function () {
             document.getElementById("myModal").style.display = "none";
-            ctrlDeleteItem(event);
+            console.log('yes clicked for delete', event.target);
+            // var itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+            // ctrlDeleteItem(event);
         })
         $(".close").click(function () {
             document.getElementById("myModal").style.display = "none";
