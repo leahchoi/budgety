@@ -2,8 +2,15 @@
 
 // How to have hover and click events be triggered by separate taps on iPhone
 //     document.body.addEventListener('touchstart',function(){},false);
-var budgetController = (function () {
 
+$(document).ready(function () {
+    $(".ion-ios-close-outline").click(function () {
+        $("#myModal").modal();
+    });
+});
+
+var budgetController = (function () {
+    // debugger;
     var Expense = function (id, description, value) {
         this.id = id;
         this.description = description;
@@ -13,7 +20,6 @@ var budgetController = (function () {
 
 
     Expense.prototype.calcPercentage = function (totalIncome) {
-        debugger;
         if (totalIncome > 0) {
             this.percentage = Math.round((this.value / totalIncome) * 100);
         } else {
@@ -35,7 +41,6 @@ var budgetController = (function () {
 
 
     var calculateTotal = function (type) {
-        debugger;
         var sum = 0;
         data.allItems[type].forEach(function (cur) {
             sum += cur.value;
@@ -60,8 +65,8 @@ var budgetController = (function () {
 
     return {
         addItem: function (type, des, val) {
-            debugger;
-            var newItem, ID;
+            // debugger;
+            var newItem, ID, key;
             // ID = last ID + 1
             // if (allItems.exp === 0) {
             //     return 'There is no income item';
@@ -70,18 +75,23 @@ var budgetController = (function () {
             // }
             var element = document.querySelector(`.no-item-${type}`);
             element.style.display = 'none';
+
+            //Create unique key for every item
+            key = Math.floor((Math.random() * 10) + 1);
             // Create new ID
+            // debugger;
             if (data.allItems[type].length > 0) {
                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+                
             } else {
                 ID = 0;
             }
 
             // Create new item based on 'inc' or 'exp' type
             if (type === 'exp') {
-                newItem = new Expense(ID, des, val);
+                newItem = new Expense(ID, des, val, key);
             } else if (type === 'inc') {
-                newItem = new Income(ID, des, val);
+                newItem = new Income(ID, des, val, key);
             }
 
             // Push it into our data structure
@@ -92,8 +102,9 @@ var budgetController = (function () {
         },
 
 
-        deleteItem: function (type, id) {
-            debugger;
+        deleteItem: function (type, id, key) {
+            // debugger;
+            // debugger;
             var ids, index;
 
             // id = 6
@@ -104,9 +115,9 @@ var budgetController = (function () {
             ids = data.allItems[type].map(function (current) {
                 return current.id;
             });
-
+            console.log('inside of delete item', ids)
             index = ids.indexOf(id);
-
+            // index = ids.id;
             if (index !== -1) {
                 data.allItems[type].splice(index, 1);
             }
@@ -119,8 +130,6 @@ var budgetController = (function () {
 
 
         calculateBudget: function () {
-            debugger;
-
             // calculate total income and expenses
             calculateTotal('exp');
             calculateTotal('inc');
@@ -154,7 +163,7 @@ var budgetController = (function () {
 
 
         getBudget: function () {
-            debugger;
+            // debugger;
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
@@ -175,7 +184,7 @@ var budgetController = (function () {
 
 // UI CONTROLLER
 var UIController = (function () {
-
+    // debugger;
     var DOMstrings = {
         inputType: '.add__type',
         inputDescription: '.add__description',
@@ -189,12 +198,14 @@ var UIController = (function () {
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
         expensesPercLabel: '.item__percentage',
-        dateLabel: '.budget__title--month'
+        dateLabel: '.budget__title--month',
+        rightClearFix: '.right clearfix'
+        // deleteBtn: '.item__delete--btn'
     };
 
 
     var formatNumber = function (num, type) {
-        debugger;
+        // debugger;
         var numSplit, int, dec, type;
         /*
             + or - before number
@@ -223,25 +234,29 @@ var UIController = (function () {
 
 
     var nodeListForEach = function (list, callback) {
-        debugger;
+        // debugger;
         for (var i = 0; i < list.length; i++) {
             callback(list[i], i);
         }
     };
 
 
+
+
     return {
         getInput: function () {
+            // debugger;
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // Will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
-                value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
+                value: parseFloat(document.querySelector(DOMstrings.inputValue).value),
+                key: Math.floor((Math.random() * 20) + 1)
             };
         },
 
 
         addListItem: function (obj, type) {
-            debugger;
+            // debugger;
             var html, newHtml, element;
             // Create HTML string with placeholder text
 
@@ -249,6 +264,7 @@ var UIController = (function () {
                 element = DOMstrings.incomeContainer;
 
                 html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                
             } else if (type === 'exp') {
                 element = DOMstrings.expensesContainer;
 
@@ -262,11 +278,19 @@ var UIController = (function () {
 
             // Insert the HTML into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+
+            // Search for item__delete--btn element and add click event for modal
+            // document.querySelector(element).getElementsByClassName('item__delete--btn')[0].addEventListener('click', function (event) {
+                
+            //     document.getElementById("myModal").style.display = "block";
+            // })
         },
+        
 
 
         deleteListItem: function (selectorID, type) {
-            debugger;
+            // debugger;
+            // debugger;
             var el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
             // if (allItems[type].length === 0){
@@ -278,6 +302,7 @@ var UIController = (function () {
 
 
         clearFields: function () {
+            // debugger;
             var fields, fieldsArr;
 
             fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
@@ -293,7 +318,7 @@ var UIController = (function () {
 
 
         displayBudget: function (obj) {
-            debugger;
+            // debugger;
             var type;
             obj.budget > 0 ? type = 'inc' : type = 'exp';
 
@@ -311,7 +336,7 @@ var UIController = (function () {
 
 
         displayPercentages: function (percentages) {
-
+            // debugger;
             var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
             nodeListForEach(fields, function (current, index) {
@@ -366,9 +391,12 @@ var UIController = (function () {
 
 // GLOBAL APP CONTROLLER
 var controller = (function (budgetCtrl, UICtrl) {
+// debugger;
+    console.log('controller', UICtrl.getDOMstrings().container)
+    // document.querySelector(UICtrl.getDOMstrings().deleteBtn).addEventListener('click', deleteConfirmationModal);
 
-    var setupEventListeners = function () {
-        debugger;
+    var setupEventListeners = function (event) {
+        // debugger;
         var DOM = UICtrl.getDOMstrings();
 
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
@@ -386,7 +414,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
 
     var updateBudget = function () {
-
+        // debugger;
         // 1. Calculate the budget
         budgetCtrl.calculateBudget();
 
@@ -412,7 +440,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
 
     var ctrlAddItem = function () {
-        debugger;
+        // debugger;
         var input, newItem;
 
         // 1. Get the field input data
@@ -420,10 +448,10 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
             // 2. Add the item to the budget controller
-            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value, input.key);
+            console.log('inside of ctrlAddItem', newItem)
             // 3. Add the item to the UI
-            UICtrl.addListItem(newItem, input.type);
+            UICtrl.addListItem(newItem, input.type, input.key);
 
             // 4. Clear the fields
             UICtrl.clearFields();
@@ -433,16 +461,81 @@ var controller = (function (budgetCtrl, UICtrl) {
 
             // 6. Calculate and update percentages
             updatePercentages();
+            // document.querySelector(element).insertAdjacentHTML('hiii', newHtml);
+            console.log('the div', document.querySelector('.item'));
         }
     };
 
 
+// document.querySelector()
+
+
+    // $(".ion-ios-close-outline").click(function (event) {
+    //     document.getElementById("myModal").style.display = "block";
+    // });
+
     var ctrlDeleteItem = function (event) {
-        debugger;
+        console.log('inside 487',event.target.matches('.ion-ios-close-outline'))
+        console.log('inside 487 event', event.target)
+        if (!event.target.matches('.ion-ios-close-outline')){
+            console.log(false)
+            return true;
+        } 
+        // debugger;
+        console.log('delete confirmation modal', event.target)
+        // // debugger;
+        // document.getElementsByClassName('item__delete').addEventListener("click", function(){
+        //     console.log('line 482')
+        // });
+        if (document.getElementById("myModal").style.display = "none"){
+            event.preventDefault()
+            console.log('inside of open modal', event.target.parentNode.parentNode.parentNode.parentNode.id)
+            var itemEvent = event;
+            document.getElementById("myModal").style.display = "block";
+        }
+        $(".confirm-no-btn").off().click(function () {
+            console.log('clicked on no button')
+            document.getElementById("myModal").style.display = "none";
+        });
+        $(".confirm-yes-btn").off().click(function () {
+            document.getElementById("myModal").style.display = "none";
+            console.log('yes clicked for delete', event.target.parentNode.parentNode.parentNode.parentNode.id);
+            // var itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+            deleteItem(itemEvent);
+        })
+        $(".close").click(function () {
+            document.getElementById("myModal").style.display = "none";
+        })
+        //     var itemID, splitID, type, ID;
+            
+        //     itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        // console.log('inside ctrldeleteitem', itemID)
+        //     if (itemID) {
+
+        //         //inc-1
+        //         splitID = itemID.split('-');
+        //         type = splitID[0];
+        //         ID = parseInt(splitID[1]);
+
+        //         // 1. delete the item from the data structure
+        //         budgetCtrl.deleteItem(type, ID);
+
+        //         // 2. Delete the item from the UI
+        //         UICtrl.deleteListItem(itemID, type);
+
+        //         // 3. Update and show the new budget
+        //         updateBudget();
+
+        //         // 4. Calculate and update percentages
+        //         updatePercentages();
+        //     }
+        // });
+    };
+    var deleteItem = function(event){
         var itemID, splitID, type, ID;
 
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
-
+        console.log('inside ctrldeleteitem', itemID)
         if (itemID) {
 
             //inc-1
@@ -464,10 +557,28 @@ var controller = (function (budgetCtrl, UICtrl) {
         }
     };
 
+    var deleteConfirmationModal = function (event) {
+        console.log('delete confirmation modal', event.target)
+        // debugger;
+        document.getElementById("myModal").style.display = "block";
+        $(".confirm-no-btn").click(function () {
+            console.log('clicked on no button')
+            document.getElementById("myModal").style.display = "none";
+        });
+        $(".confirm-yes-btn").click(function () {
+            document.getElementById("myModal").style.display = "none";
+            console.log('yes clicked for delete', event.target);
+            // var itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+            // ctrlDeleteItem(event);
+        })
+        $(".close").click(function () {
+            document.getElementById("myModal").style.display = "none";
+        })
+    }
 
     return {
         init: function () {
-            debugger;
+            // debugger;
             console.log('Application has started.');
             UICtrl.displayMonth();
             UICtrl.displayBudget({
