@@ -10,7 +10,7 @@ $(document).ready(function () {
 });
 
 var budgetController = (function () {
-    debugger;
+    // debugger;
     var Expense = function (id, description, value) {
         this.id = id;
         this.description = description;
@@ -65,7 +65,7 @@ var budgetController = (function () {
 
     return {
         addItem: function (type, des, val) {
-            debugger;
+            // debugger;
             var newItem, ID, key;
             // ID = last ID + 1
             // if (allItems.exp === 0) {
@@ -79,7 +79,7 @@ var budgetController = (function () {
             //Create unique key for every item
             key = Math.floor((Math.random() * 10) + 1);
             // Create new ID
-            debugger;
+            // debugger;
             if (data.allItems[type].length > 0) {
                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
                 
@@ -103,7 +103,7 @@ var budgetController = (function () {
 
 
         deleteItem: function (type, id, key) {
-            debugger;
+            // debugger;
             // debugger;
             var ids, index;
 
@@ -163,7 +163,7 @@ var budgetController = (function () {
 
 
         getBudget: function () {
-            debugger;
+            // debugger;
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
@@ -184,7 +184,7 @@ var budgetController = (function () {
 
 // UI CONTROLLER
 var UIController = (function () {
-    debugger;
+    // debugger;
     var DOMstrings = {
         inputType: '.add__type',
         inputDescription: '.add__description',
@@ -198,12 +198,14 @@ var UIController = (function () {
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
         expensesPercLabel: '.item__percentage',
-        dateLabel: '.budget__title--month'
+        dateLabel: '.budget__title--month',
+        rightClearFix: '.right clearfix'
+        // deleteBtn: '.item__delete--btn'
     };
 
 
     var formatNumber = function (num, type) {
-        debugger;
+        // debugger;
         var numSplit, int, dec, type;
         /*
             + or - before number
@@ -232,7 +234,7 @@ var UIController = (function () {
 
 
     var nodeListForEach = function (list, callback) {
-        debugger;
+        // debugger;
         for (var i = 0; i < list.length; i++) {
             callback(list[i], i);
         }
@@ -243,7 +245,7 @@ var UIController = (function () {
 
     return {
         getInput: function () {
-            debugger;
+            // debugger;
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // Will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
@@ -254,7 +256,7 @@ var UIController = (function () {
 
 
         addListItem: function (obj, type) {
-            debugger;
+            // debugger;
             var html, newHtml, element;
             // Create HTML string with placeholder text
 
@@ -262,6 +264,7 @@ var UIController = (function () {
                 element = DOMstrings.incomeContainer;
 
                 html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                
             } else if (type === 'exp') {
                 element = DOMstrings.expensesContainer;
 
@@ -286,7 +289,7 @@ var UIController = (function () {
 
 
         deleteListItem: function (selectorID, type) {
-            debugger;
+            // debugger;
             // debugger;
             var el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
@@ -299,7 +302,7 @@ var UIController = (function () {
 
 
         clearFields: function () {
-            debugger;
+            // debugger;
             var fields, fieldsArr;
 
             fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
@@ -315,7 +318,7 @@ var UIController = (function () {
 
 
         displayBudget: function (obj) {
-            debugger;
+            // debugger;
             var type;
             obj.budget > 0 ? type = 'inc' : type = 'exp';
 
@@ -333,7 +336,7 @@ var UIController = (function () {
 
 
         displayPercentages: function (percentages) {
-            debugger;
+            // debugger;
             var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
             nodeListForEach(fields, function (current, index) {
@@ -388,12 +391,12 @@ var UIController = (function () {
 
 // GLOBAL APP CONTROLLER
 var controller = (function (budgetCtrl, UICtrl) {
-debugger;
+// debugger;
     console.log('controller', UICtrl.getDOMstrings().container)
-    document.querySelector(UICtrl.getDOMstrings().container).addEventListener('click', deleteConfirmationModal);
+    // document.querySelector(UICtrl.getDOMstrings().deleteBtn).addEventListener('click', deleteConfirmationModal);
 
-    var setupEventListeners = function () {
-        debugger;
+    var setupEventListeners = function (event) {
+        // debugger;
         var DOM = UICtrl.getDOMstrings();
 
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
@@ -411,7 +414,7 @@ debugger;
 
 
     var updateBudget = function () {
-        debugger;
+        // debugger;
         // 1. Calculate the budget
         budgetCtrl.calculateBudget();
 
@@ -437,7 +440,7 @@ debugger;
 
 
     var ctrlAddItem = function () {
-        debugger;
+        // debugger;
         var input, newItem;
 
         // 1. Get the field input data
@@ -458,11 +461,13 @@ debugger;
 
             // 6. Calculate and update percentages
             updatePercentages();
+            // document.querySelector(element).insertAdjacentHTML('hiii', newHtml);
+            console.log('the div', document.querySelector('.item'));
         }
     };
 
 
-
+// document.querySelector()
 
 
     // $(".ion-ios-close-outline").click(function (event) {
@@ -470,16 +475,24 @@ debugger;
     // });
 
     var ctrlDeleteItem = function (event) {
-        debugger;
+        console.log('inside 487',event.target.matches('.ion-ios-close-outline'))
+        console.log('inside 487 event', event.target)
+        if (!event.target.matches('.ion-ios-close-outline')){
+            console.log(false)
+            return true;
+        } 
+        // debugger;
         console.log('delete confirmation modal', event.target)
-        debugger;
-        
+        // // debugger;
+        // document.getElementsByClassName('item__delete').addEventListener("click", function(){
+        //     console.log('line 482')
+        // });
         if (document.getElementById("myModal").style.display = "none"){
             event.preventDefault()
             console.log('inside of open modal', event.target.parentNode.parentNode.parentNode.parentNode.id)
             var itemEvent = event;
+            document.getElementById("myModal").style.display = "block";
         }
-        document.getElementById("myModal").style.display = "block";
         $(".confirm-no-btn").off().click(function () {
             console.log('clicked on no button')
             document.getElementById("myModal").style.display = "none";
@@ -546,7 +559,7 @@ debugger;
 
     var deleteConfirmationModal = function (event) {
         console.log('delete confirmation modal', event.target)
-        debugger;
+        // debugger;
         document.getElementById("myModal").style.display = "block";
         $(".confirm-no-btn").click(function () {
             console.log('clicked on no button')
@@ -565,7 +578,7 @@ debugger;
 
     return {
         init: function () {
-            debugger;
+            // debugger;
             console.log('Application has started.');
             UICtrl.displayMonth();
             UICtrl.displayBudget({
